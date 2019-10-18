@@ -2,7 +2,7 @@ FROM registry.cn-zhangjiakou.aliyuncs.com/jdyh/jdk:8u211
 
 ENV CATALINA_HOME="/opt/tomcat"
 ENV TOMCAT_MAJOR=8 \
-    TOMCAT_VERSION=8.5.42
+    TOMCAT_VERSION=8.5.47
 ENV PATH="$CATALINA_HOME/bin:$PATH" \
     TOMCAT_NATIVE_LIBDIR="$CATALINA_HOME/lib" \
     TOMCAT_TGZ_URLS="http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz"
