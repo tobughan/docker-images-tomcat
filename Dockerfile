@@ -1,4 +1,4 @@
-FROM registry.cn-zhangjiakou.aliyuncs.com/jdyh-public/jdk:8u211
+FROM registry.cn-zhangjiakou.aliyuncs.com/jdyh-public/jdk:8u211-alpine
 
 ENV CATALINA_HOME="/opt/tomcat"
 ENV TOMCAT_MAJOR=8 \
@@ -8,19 +8,20 @@ ENV PATH="$CATALINA_HOME/bin:$PATH" \
     TOMCAT_TGZ_URLS="http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz"
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$TOMCAT_NATIVE_LIBDIR
 
-RUN yum install -y wget gcc make apr-devel openssl-devel && \
-    wget -O /usr/src/apache-tomcat-$TOMCAT_VERSION.tar.gz ${TOMCAT_TGZ_URLS} && \
-    tar -xvf /usr/src/apache-tomcat-$TOMCAT_VERSION.tar.gz -C /opt && \
-    rm -f /usr/src/apache-tomcat-$TOMCAT_VERSION.tar.gz && \
+RUN apk add --no-cache  gcc make musl-dev apr-dev openssl-dev && \
+    wget -O /opt/apache-tomcat-$TOMCAT_VERSION.tar.gz ${TOMCAT_TGZ_URLS} && \
+    tar -xvf /opt/apache-tomcat-$TOMCAT_VERSION.tar.gz -C /opt && \
+    rm -f /opt/apache-tomcat-$TOMCAT_VERSION.tar.gz && \
     mv /opt/apache-tomcat-$TOMCAT_VERSION $CATALINA_HOME && \
-    tar -xvf $CATALINA_HOME/bin/tomcat-native.tar.gz -C /usr/src && \
+    tar -xvf $CATALINA_HOME/bin/tomcat-native.tar.gz -C /opt && \
     rm -f $CATALINA_HOME/bin/tomcat-native.tar.gz && \
-    TOMCAT_NATIVE_HOME=$(ls -d /usr/src/tomcat-native*) && \
+    TOMCAT_NATIVE_HOME=$(ls -d /opt/tomcat-native*) && \
     cd ${TOMCAT_NATIVE_HOME}/native && \
     ./configure --with-apr=/usr/bin/apr-1-config --with-java-home=/opt/jdk${JDK_VERSION} --with-ssl=yes --prefix=$CATALINA_HOME && \
     make && make install && \
     rm -rf ${TOMCAT_NATIVE_HOME} && \
     rm -rf $CATALINA_HOME/webapps/* && \
+    apk del gcc make musl-dev apr-dev openssl-dev && \
     sed -ri '/.*<!--The connectors/{N;N;N;N;s#(pools--.\n)(.*--\n)(.*/.\n)(.*)#\1\3#}' $CATALINA_HOME/conf/server.xml && \
     sed -ri '/.*<!--.*pool/{N;N;N;N;N;N;s#(pool--.\n)(.*--\n)(.*/.\n)(.*)#\1\3#}' $CATALINA_HOME/conf/server.xml && \
     sed -i '/Connector port="8080"/i \    <!--' $CATALINA_HOME/conf/server.xml && \
