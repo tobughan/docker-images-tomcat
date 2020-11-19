@@ -1,4 +1,4 @@
-FROM anapsix/alpine-java:8u201b09_jdk
+FROM registry.cn-zhangjiakou.aliyuncs.com/jdyh-public/jdk:8u201-alpine
 
 ENV CATALINA_HOME="/opt/tomcat" \
     TOMCAT_VERSION=8.5.60 \
