@@ -5,10 +5,10 @@ ENV CATALINA_HOME="/opt/tomcat" \
     TOMCAT_NATIVE_LIBDIR="/opt/tomcat/lib" \
     TOMCAT_TGZ_URLS="http://mirrors.aliyun.com/apache/tomcat/tomcat-8/v8.5.60/bin/apache-tomcat-8.5.60.tar.gz" \
     PATH="$PATH:/opt/tomcat/bin" \
-    LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/opt/tomcat/lib"
+    LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}/opt/tomcat/lib
 RUN echo http://mirrors.aliyun.com/alpine/v3.8/main >/etc/apk/repositories && \
     echo http://mirrors.aliyun.com/alpine/v3.8/community >>/etc/apk/repositories && \
-    apk add --no-cache gcc make apr-dev openssl-dev musl-dev && \
+    apk add --no-cache gcc make apr-dev openssl-dev libc-dev && \
     wget -O /opt/apache-tomcat-$TOMCAT_VERSION.tar.gz ${TOMCAT_TGZ_URLS} && \
     tar -xvf /opt/apache-tomcat-$TOMCAT_VERSION.tar.gz -C /opt && \
     rm -f /opt/apache-tomcat-$TOMCAT_VERSION.tar.gz && \
@@ -21,7 +21,6 @@ RUN echo http://mirrors.aliyun.com/alpine/v3.8/main >/etc/apk/repositories && \
     make && make install && \
     rm -rf ${TOMCAT_NATIVE_HOME} && \
     rm -rf $CATALINA_HOME/webapps/* && \
-    apk del gcc make musl-dev && \
     sed -ri '/.*<!--The connectors/{N;N;N;N;s#(pools--.\n)(.*--\n)(.*/.\n)(.*)#\1\3#}' $CATALINA_HOME/conf/server.xml && \
     sed -ri '/.*<!--.*pool/{N;N;N;N;N;N;s#(pool--.\n)(.*--\n)(.*/.\n)(.*)#\1\3#}' $CATALINA_HOME/conf/server.xml && \
     sed -i '/Connector port="8080"/i \    <!--' $CATALINA_HOME/conf/server.xml && \
