@@ -22,7 +22,7 @@ RUN echo http://mirrors.aliyun.com/alpine/v3.8/main >/etc/apk/repositories && \
     make && make install && \
     rm -rf ${TOMCAT_NATIVE_HOME} && \
     rm -rf $CATALINA_HOME/webapps/* && \
-    apk del build-native
+    apk del build-native && \
     sed -ri '/.*<!--The connectors/{N;N;N;N;s#(pools--.\n)(.*--\n)(.*/.\n)(.*)#\1\3#}' $CATALINA_HOME/conf/server.xml && \
     sed -ri '/.*<!--.*pool/{N;N;N;N;N;N;s#(pool--.\n)(.*--\n)(.*/.\n)(.*)#\1\3#}' $CATALINA_HOME/conf/server.xml && \
     sed -i '/Connector port="8080"/i \    <!--' $CATALINA_HOME/conf/server.xml && \
