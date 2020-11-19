@@ -1,14 +1,14 @@
-FROM registry.cn-zhangjiakou.aliyuncs.com/jdyh-public/jdk:8u211-alpine
+FROM anapsix/alpine-java:8u201b09_jdk
 
-ENV CATALINA_HOME="/opt/tomcat"
-ENV TOMCAT_MAJOR=8 \
-    TOMCAT_VERSION=8.5.59
-ENV PATH="$CATALINA_HOME/bin:$PATH" \
-    TOMCAT_NATIVE_LIBDIR="$CATALINA_HOME/lib" \
-    TOMCAT_TGZ_URLS="http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz"
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}$TOMCAT_NATIVE_LIBDIR
-
-RUN apk add --no-cache  gcc make musl-dev apr-dev openssl-dev && \
+ENV CATALINA_HOME="/opt/tomcat" \
+    TOMCAT_VERSION=8.5.60 \
+    TOMCAT_NATIVE_LIBDIR="/opt/tomcat/lib" \
+    TOMCAT_TGZ_URLS="https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.60/bin/apache-tomcat-8.5.60.tar.gz" \
+    PATH="$PATH:/opt/tomcat/bin" \
+    LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/opt/tomcat/lib"
+RUN echo http://mirrors.aliyun.com/alpine/v3.8/main >/etc/apk/repositories && \
+    echo http://mirrors.aliyun.com/alpine/v3.8/community >>/etc/apk/repositories && \
+    apk add --no-cache gcc make apr-dev openssl-dev musl-dev && \
     wget -O /opt/apache-tomcat-$TOMCAT_VERSION.tar.gz ${TOMCAT_TGZ_URLS} && \
     tar -xvf /opt/apache-tomcat-$TOMCAT_VERSION.tar.gz -C /opt && \
     rm -f /opt/apache-tomcat-$TOMCAT_VERSION.tar.gz && \
@@ -30,7 +30,7 @@ RUN apk add --no-cache  gcc make musl-dev apr-dev openssl-dev && \
     sed -i '/Connector port="8009"/a \    -->' $CATALINA_HOME/conf/server.xml && \
     sed -i '/equivalent/a \        <!--' $CATALINA_HOME/conf/server.xml && \
     sed -i '/%b/a \        -->' $CATALINA_HOME/conf/server.xml && \
-    sed -i '/executor=/a \               maxPostSize="20971520"' $CATALINA_HOME/conf/server.xml && \
+    sed -i '/executor=/a \               maxPostSize="209715200"' $CATALINA_HOME/conf/server.xml && \
     sed -ri '/minSpareThreads/s#(.*\"4\")(.*)#\1 maxSpareThreads=\"10\"\2#' $CATALINA_HOME/conf/server.xml && \
     sed -ri '/8080\" protocol/s/(.*protocol=)(.*)/\1\"org.apache.coyote.http11.Http11AprProtocol\"/' $CATALINA_HOME/conf/server.xml
 WORKDIR $CATALINA_HOME
