@@ -3,7 +3,7 @@ FROM anapsix/alpine-java:8u201b09_jdk
 ENV CATALINA_HOME="/opt/tomcat" \
     TOMCAT_VERSION=8.5.60 \
     TOMCAT_NATIVE_LIBDIR="/opt/tomcat/lib" \
-    TOMCAT_TGZ_URLS="https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.60/bin/apache-tomcat-8.5.60.tar.gz" \
+    TOMCAT_TGZ_URLS="http://mirrors.aliyun.com/apache/tomcat/tomcat-8/v8.5.60/bin/apache-tomcat-8.5.60.tar.gz" \
     PATH="$PATH:/opt/tomcat/bin" \
     LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/opt/tomcat/lib"
 RUN echo http://mirrors.aliyun.com/alpine/v3.8/main >/etc/apk/repositories && \
