@@ -31,7 +31,6 @@ RUN echo http://mirrors.aliyun.com/alpine/v3.8/main >/etc/apk/repositories && \
     sed -i '/equivalent/a \        <!--' $CATALINA_HOME/conf/server.xml && \
     sed -i '/%b/a \        -->' $CATALINA_HOME/conf/server.xml && \
     sed -i '/executor=/a \               maxPostSize="209715200"' $CATALINA_HOME/conf/server.xml && \
-    sed -ri '/minSpareThreads/s#(.*\"4\")(.*)#\1 maxSpareThreads=\"10\"\2#' $CATALINA_HOME/conf/server.xml && \
     sed -ri '/8080\" protocol/s/(.*protocol=)(.*)/\1\"org.apache.coyote.http11.Http11AprProtocol\"/' $CATALINA_HOME/conf/server.xml
 WORKDIR $CATALINA_HOME
 EXPOSE 8080
