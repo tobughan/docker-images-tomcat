@@ -8,7 +8,7 @@ ENV CATALINA_HOME="/opt/tomcat" \
     LD_LIBRARY_PATH=${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}/opt/tomcat/lib
 RUN echo http://mirrors.aliyun.com/alpine/v3.8/main >/etc/apk/repositories && \
     echo http://mirrors.aliyun.com/alpine/v3.8/community >>/etc/apk/repositories && \
-    apk add --no-cache --virtual base-native libssl1.0 && \
+    apk add --no-cache --virtual base-native libssl1.0 apr && \
     apk add --no-cache --virtual build-native gcc make apr-dev openssl-dev musl-dev && \
     wget -O /opt/apache-tomcat-$TOMCAT_VERSION.tar.gz ${TOMCAT_TGZ_URLS} && \
     tar -xvf /opt/apache-tomcat-$TOMCAT_VERSION.tar.gz -C /opt && \
